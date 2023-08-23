@@ -1,0 +1,65 @@
+﻿@using DevExtreme.MVC.Demos.Models.SampleData
+
+<script>
+    var fromPregroupedData = new DevExpress.data.DataSource({
+        store: {
+            type: 'array',
+            data: @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(SampleData.ElectronicsGrouped))),
+            key: 'ID',
+        },
+        map(item) {
+            item.key = item.Name;
+            item.items = item.Products;
+            return item;
+        },
+    });
+    
+    fromPregroupedData.load();
+</script>
+
+<div class="dx-fieldset">
+    <div class="dx-field">
+        <div class="dx-field-label">Data grouped in the DataSource</div>
+        <div class="dx-field-value">
+            @(Html.DevExtreme().SelectBox()
+                .InputAttr("aria-label", "Data")
+                .DataSource(SampleData.Electronics)
+                .DataSourceOptions(o => o.Group("Category"))
+                .ValueExpr("ID")
+                .Grouped(true)
+                .DisplayExpr("Name")
+                .Value(1)
+            )
+        </div>
+    </div>
+    <div class="dx-field">
+        <div class="dx-field-label">Pre-grouped data</div>
+        <div class="dx-field-value">
+            @(Html.DevExtreme().SelectBox()
+                .DataSource(new JS("fromPregroupedData"))
+                .InputAttr("aria-label", "Pregrouped Data")
+                .ValueExpr("ID")
+                .Grouped(true)
+                .DisplayExpr("Name")
+                .Value(1)
+            )
+        </div>
+    </div>
+    <div class="dx-field">
+        <div class="dx-field-label">Custom group template</div>
+        <div class="dx-field-value">
+            @(Html.DevExtreme().SelectBox()
+                .InputAttr("aria-label", "Templated Ungrouped Data")
+                .DataSource(SampleData.Electronics)
+                .DataSourceOptions(o => o.Group("Category"))
+                .ValueExpr("ID")
+                .Grouped(true)
+                .DisplayExpr("Name")
+                .GroupTemplate(@<text>
+                    <div class="custom-icon"><span class="dx-icon-box icon"></span><%- key %></div>
+                </text>)
+                .Value(1)
+            )
+        </div>
+    </div>
+</div>

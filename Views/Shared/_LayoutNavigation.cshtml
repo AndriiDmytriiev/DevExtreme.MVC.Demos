@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    @RenderSection("ExternalDependencies", false)
+
+    @Styles.Render(BundleConfig.StyleBundlePath)
+    <link rel="stylesheet" href="~/Content/DevExtreme/dx.light.css" />
+    <link rel="stylesheet" href="~/Content/site.css" />
+    <link rel="stylesheet" href="~/Content/custom.css" />
+    @Html.Partial("_DemoStyles")
+
+    @Scripts.Render(BundleConfig.ScriptBundlePath)
+    @RenderSection("Localization", false)
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/lang-css.min.js"></script>
+</head>
+<body class="dx-viewport">
+    <header class="header">
+        <div class="header-container">
+            <a class="logo" href="@Url.Content("~/")">
+
+            </a>
+            <center> <table>
+    <tr>
+        <td bgcolor="lightgrey">
+            The demo shows how modern web controls can be used to create many functional websites.
+        </td>
+        <td bgcolor="lightgrey">
+            <a href="https://www.linkedin.com/in/andrii-dmytriiev-50479316/" target="_blank">
+                Andrii Dmytriiev's LinkedIN
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+           
+        </td>
+        <td>
+            
+           
+        </td>
+    </tr>
+</table>
+   
+</center>
+            
+            <div class="header-buttons">
+                <!--
+        <a class="download" title="Download" href="https://go.devexpress.com/DevExpressDownload_UniversalTrial.aspx" target="_blank">
+            <span class="menu-text">Free Trial</span>-->
+                @*</a>*@
+                <!--
+
+        <a class="buy" title="Buy" href="https://www.devexpress.com/Subscriptions/" target="_blank">
+            <span class="menu-text">Buy</span>
+        </a>-->
+                <!--
+        -->
+            </div>
+        </div>
+    </header>
+    <div class="body">
+        @Html.Partial("_DemoMenu")
+
+        <div class="demo-wrapper">
+            @{ var meta = DemoMenuMeta.Get(Context); }
+            <h1>@meta.GetBreadcrumb(meta.CurrentDemo, "▸")</h1>
+
+            <div class="description">
+                @if (!String.IsNullOrEmpty(meta.CurrentDemo.DescriptionHtml))
+                {
+                    <div>@Html.Raw(meta.CurrentDemo.DescriptionHtml)</div>
+                }
+            </div>
+
+            <div class="simulator">
+                <div class="demo-device">
+                    <div class="demo-display">
+                        <div class="demo-container">
+                            @RenderBody()
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (meta.CurrentDemo.DisplayCode)
+            {
+                @Html.Partial("_DemoCode")
+            }
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+
+            <div class="notice">
+
+                <div class="links">
+
+                </div>
+            </div>
+        </div>
+    </footer>
+    <center><b>&copy; 2023 Designed by Andrii Dmytriiev</b></center>
+</body>
+
+</html>

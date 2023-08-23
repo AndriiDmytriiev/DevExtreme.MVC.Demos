@@ -1,0 +1,24 @@
+﻿@(Html.DevExtreme().Chart()
+    .ID("chart")
+    .Palette(VizPalette.Soft)
+    .CommonSeriesSettings(s => s
+        .ArgumentField("Age")
+        .ValueField("Number")
+        .Type(SeriesType.Bar)
+        .IgnoreEmptyPoints(true)
+    )
+    .Title(t => t
+        .Text("Age Breakdown of Facebook Users in the U.S.")
+        .Subtitle("as of January 2017")
+    )
+    .SeriesTemplate(t => t.NameField("Age"))
+    .DataSource(new[] {
+        new { Age = "13-17", Number = 6869661 },
+        new { Age = "18-24", Number = 40277957 },
+        new { Age = "25-34", Number = 53481235 },
+        new { Age = "35-44", Number = 40890002 },
+        new { Age = "45-54", Number = 31916371 },
+        new { Age = "55-64", Number = 13725406 },
+        new { Age = "65+", Number = 16732183 }
+    })
+)

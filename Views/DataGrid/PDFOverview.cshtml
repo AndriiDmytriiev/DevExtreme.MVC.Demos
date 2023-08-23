@@ -1,0 +1,49 @@
+﻿@section ExternalDependencies {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        window.jsPDF = window.jspdf.jsPDF;
+    </script>
+}
+
+@(Html.DevExtreme().DataGrid<DevExtreme.MVC.Demos.Models.Customer>()
+    .ID("gridContainer")
+    .Columns(columns => {
+        columns.AddFor(m => m.CompanyName);
+
+        columns.AddFor(m => m.Phone);
+
+        columns.AddFor(m => m.Fax);
+
+        columns.AddFor(m => m.City);
+
+        columns.AddFor(m => m.State)
+            .GroupIndex(0);
+    })
+    .AllowColumnReordering(true)
+    .ShowBorders(true)
+    .Grouping(grouping => grouping.AutoExpandAll(true))
+    .Paging(paging => paging.PageSize(10))
+    .DataSource(d => d.WebApi()
+        .Controller("DataGridCustomers")
+        .Key("ID")
+    )
+    .Selection(s => s.Mode(SelectionMode.Multiple))
+    .Export(e => e.Enabled(true)
+        .AllowExportSelectedData(true)
+        .Formats(new[] { "pdf" })
+    )
+    .OnExporting("exportToPDF")
+)
+
+<script>
+    function exportToPDF(e) {
+        var doc = new jsPDF();
+        DevExpress.pdfExporter.exportDataGrid({
+            jsPDFDocument: doc,
+            component: e.component,
+            indent: 5,
+        }).then(function () {
+            doc.save("Companies.pdf");
+        });
+    }
+</script>

@@ -1,0 +1,83 @@
+﻿@(Html.DevExtreme().TreeList<DevExtreme.MVC.Demos.Models.TreeList.Employee>()
+    .ID("employees")
+    .DataSource(ds => ds.WebApi().Controller("TreeListEmployees").Key("ID"))
+    .KeyExpr("ID")
+    .ParentIdExpr("HeadID")
+    .ShowRowLines(true)
+    .ShowBorders(true)
+    .Selection(s => s
+        .Mode(SelectionMode.Multiple)
+        .Recursive(false)
+    )
+    .Columns(columns => {
+        columns.AddFor(m => m.FullName);
+
+        columns.AddFor(m => m.Title);
+
+        columns.AddFor(m => m.City);
+
+        columns.AddFor(m => m.State);
+
+        columns.AddFor(m => m.HireDate)
+            .Width(120);
+    })
+    .ColumnAutoWidth(true)
+    .ExpandedRowKeys(new[] { 1, 2, 10 })
+    .OnSelectionChanged("onSelectionChanged")
+)
+
+<div class="options">
+    <div class="caption">Options</div>
+    <div class="option">
+        <span>Selection Mode</span>
+        @(Html.DevExtreme().SelectBox()
+            .Value("all")
+            .InputAttr("aria-label", "Selection Mode")
+            .DataSource(new[] { "all", "excludeRecursive", "leavesOnly" })
+            .OnValueChanged(@<text>
+                function(e) {
+                    var treeList = $("#employees").dxTreeList("instance");
+                    treeList.clearSelection();
+
+                    selectionMode = e.value;
+                }
+            </text>
+            )
+        )
+    </div>
+    <div class="option">
+        @(Html.DevExtreme().CheckBox()
+            .Value(false)
+            .Text("Recursive Selection")
+            .OnValueChanged(@<text>
+                function(e) {
+                    var treeList = $("#employees").dxTreeList("instance");
+                    treeList.clearSelection();
+                    treeList.option("selection.recursive", e.value);
+                }
+            </text>
+            )
+        )
+    </div>
+    <div class="selected-data">
+        <span class="caption">Selected Records:</span>
+        <span id="selected-items-container">Nobody has been selected</span>
+    </div>
+</div>
+
+<script>
+    var selectionMode = "all";
+
+    function getEmployeeNames(employees) {
+        if (employees.length > 0) {
+            return employees.map(employee => employee.FullName).join(", ");
+        } else {
+            return "Nobody has been selected";
+        }
+    }
+
+    function onSelectionChanged(e) {
+        var selectedData = e.component.getSelectedRowsData(selectionMode);
+        $("#selected-items-container").text(getEmployeeNames(selectedData));
+    }
+</script>

@@ -1,0 +1,67 @@
+﻿@section ExternalDependencies {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        window.jsPDF = window.jspdf.jsPDF;
+    </script>
+}
+
+@(Html.DevExtreme().DataGrid()
+    .ID("gridContainer")
+    .DataSource(new JS("employees"))
+    .KeyExpr("ID")
+    .Export(e => e.Enabled(true))
+    .ShowBorders(true)
+    .ShowRowLines(true)
+    .ShowColumnLines(false)
+    .Columns(columns =>
+    {
+        columns.Add().DataField("Picture")
+            .Width(90)
+            .CellTemplate(@<text>
+                <div>
+                    <img src="<%- value %>" alt="" />
+                </div>
+            </text>);
+
+        columns.Add().DataField("FirstName");
+        columns.Add().DataField("LastName");
+        columns.Add().DataField("Position");
+        columns.Add().DataField("BirthDate").DataType(GridColumnDataType.Date);
+        columns.Add().DataField("HireDate").DataType(GridColumnDataType.Date);
+    })
+    .Export(e => e.Enabled(true).Formats(new[] { "pdf" }))
+    .OnExporting("exportToPDF")
+)
+<script src="~/Scripts/data/employeesEI.js"></script>
+<script>
+    function exportToPDF({ component }) {
+        const doc = new jsPDF();
+
+        DevExpress.pdfExporter.exportDataGrid({
+            jsPDFDocument: doc,
+            component,
+            margin: {
+                top: 10,
+                right: 10,
+                bottom: 10,
+                left: 10,
+            },
+            topLeft: { x: 5, y: 5 },
+            columnWidths: [30, 30, 30, 30, 30, 30],
+            onRowExporting: (e) => {
+                const isHeader = e.rowCells[0].text === 'Picture';
+                if (!isHeader) {
+                    e.rowHeight = 40;
+                }
+            },
+            customDrawCell: (e) => {
+                if (e.gridCell.rowType === 'data' && e.gridCell.column.dataField === 'Picture') {
+                    doc.addImage(e.gridCell.value, 'PNG', e.rect.x, e.rect.y, e.rect.w, e.rect.h);
+                    e.cancel = true;
+                }
+            }
+        }).then(() => {
+            doc.save('DataGrid.pdf');
+        });
+    }
+</script>

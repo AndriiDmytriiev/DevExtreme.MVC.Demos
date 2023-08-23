@@ -1,0 +1,100 @@
+﻿<div class="form">
+    <div class="dx-fieldset">
+        <div class="dx-field">
+            <div class="dx-field-label">Default mode</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().TextBox()
+                    .Value("John Smith")
+                    .InputAttr("aria-label", "Name")
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">With placeholder</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().TextBox()
+                    .Placeholder("Enter full name here...")
+                    .InputAttr("aria-label", "Full Name")
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">With clear button</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().TextBox()
+                    .Value("John Smith")
+                    .InputAttr("aria-label", "Name")
+                    .ShowClearButton(true)
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">Password mode</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().TextBox()
+                    .Mode(TextBoxMode.Password)
+                    .Value("f5lzKs0T")
+                    .Placeholder("Enter password")
+                    .InputAttr("aria-label", "Password")
+                    .ShowClearButton(true)
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">Text mask</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().TextBox()
+                    .Mask("+1 (X00) 000-0000")
+                    .InputAttr("aria-label", "Mask")
+                    .MaskRules(new { X = new JS("/[02-9]/") })
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">Disabled</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().TextBox()
+                    .Value("John Smith")
+                    .InputAttr("aria-label", "Name")
+                    .Disabled(true)
+                )
+            </div>
+        </div>
+    </div>
+    <div class="dx-fieldset">
+        <div class="dx-fieldset-header">Events and API</div>
+        <div class="dx-field">
+            <div class="dx-field-label">Full Name</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().TextBox()
+                    .Value("Smith")
+                    .ShowClearButton(true)
+                    .Placeholder("Enter full name")
+                    .InputAttr("aria-label", "Full Name")
+                    .ValueChangeEvent("keyup")
+                    .OnValueChanged("textBox_valueChanged")
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">Email (read only)</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().TextBox()
+                    .ID("email")
+                    .Value("smith@corp.com")
+                    .InputAttr("aria-label", "Email")
+                    .ReadOnly(true)
+                    .HoverStateEnabled(true)
+                )
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function textBox_valueChanged(data) {
+        $("#email")
+            .dxTextBox("instance")
+            .option("value", data.value.replace(/\s/g, "").toLowerCase() + "@@corp.com");
+    }
+</script>

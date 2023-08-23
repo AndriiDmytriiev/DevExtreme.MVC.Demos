@@ -1,0 +1,87 @@
+﻿<div class="form">
+    <div class="dx-fieldset">
+        <div class="dx-field">
+            <div class="dx-field-label">Checked</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().CheckBox()
+                    .Value(true)
+                    .ElementAttr("aria-label", "Checked")
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">Unchecked</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().CheckBox()
+                    .Value(false)
+                    .ElementAttr("aria-label", "Unchecked")
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">Indeterminate</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().CheckBox()
+                    .Value(null)
+                    .ElementAttr("aria-label", "Indeterminate")
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">Three state mode</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().CheckBox()
+                    .EnableThreeStateBehavior(true)
+                    .Value(null)
+                    .ElementAttr("aria-label", "Three state mode")
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">Handle value change</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().CheckBox()
+                    .Value(null)
+                    .ElementAttr("aria-label", "Handle value change")
+                    .OnValueChanged("checkBox_valueChanged")
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">Disabled</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().CheckBox()
+                    .ID("disabled")
+                    .Value(null)
+                    .Disabled(true)
+                    .ElementAttr("aria-label", "Disabled")
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">Custom size</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().CheckBox()
+                    .Value(null)
+                    .IconSize(30)
+                    .ElementAttr("aria-label", "Custom size")
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">With label</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().CheckBox()
+                    .Value(true)
+                    .Text("Label")
+                )
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function checkBox_valueChanged(data) {
+        $("#disabled").dxCheckBox("instance").option("value", data.value);
+    }
+</script>

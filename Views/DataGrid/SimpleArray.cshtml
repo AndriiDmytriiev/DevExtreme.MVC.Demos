@@ -1,0 +1,15 @@
+﻿@model IEnumerable<DevExtreme.MVC.Demos.Models.Customer>
+
+@(Html.DevExtreme().DataGrid()
+    .ID("gridContainer")
+    .DataSource(Model)
+    .KeyExpr("ID")
+    .ShowBorders(true)
+    .Columns(c => {
+        c.Add().DataField("CompanyName");
+        c.Add().DataField("City");
+        c.Add().DataField("State");
+        c.Add().DataField("Phone");
+        c.Add().DataField("Fax");
+    })
+)

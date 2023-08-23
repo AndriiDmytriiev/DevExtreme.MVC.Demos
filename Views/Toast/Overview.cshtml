@@ -1,0 +1,35 @@
+﻿@model IEnumerable<DevExtreme.MVC.Demos.Models.ListProduct>
+
+<div id="product-list">
+    <h1>Product List</h1>
+    <ul class="products">
+        @foreach(var product in Model) {
+            <li>
+                <img alt="@product.Name" src="@product.ImageSrc" />
+                <div class="name">@product.Name</div>
+                @(Html.DevExtreme().CheckBox()
+                    .Text("Available")
+                    .OnValueChanged("checkAvailable")
+                )
+            </li>
+        }
+    </ul>
+    @(Html.DevExtreme().Toast()
+        .ID("toast")
+        .DisplayTime(600)
+    )
+</div>
+
+<script>
+    function checkAvailable(data) {
+        const type = data.value ? "success" : "error";
+        const productName = data.element.parent().find(".name").text();
+        const message = productName + (data.value ? " is available" : " is not available");
+
+        $("#toast").dxToast("instance").option({
+            type,
+            message,
+            visible: true
+        });
+    }
+</script>

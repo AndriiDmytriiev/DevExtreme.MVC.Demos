@@ -1,0 +1,35 @@
+﻿.label {
+    color: rgba(51, 51, 51, 0.6);
+    font-size: 12px;
+}
+
+.demo-container {
+    height: 450px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px 0px;
+    gap: 15px;
+}
+
+.dx-popup-content {
+    font-size: 12px;
+}
+
+.caption {
+    padding-bottom: 8px;
+    font-weight: 500;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+}

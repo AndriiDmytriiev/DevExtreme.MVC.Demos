@@ -1,0 +1,165 @@
+@{
+    var directions = new[] {
+        "down-push", "down-stack",  "up-push", "up-stack",
+        "left-push", "left-stack", "right-push", "right-stack"
+    };
+    var positions = new[] {
+        "top left", "top center", "top right",
+        "bottom left", "bottom center", "bottom right",
+        "left center", "center", "right center"
+    };
+    var radioGroupItems = new[] { "predefined", "coordinates" };
+}
+<div class="options">
+    <div>Position</div>
+    @(Html.DevExtreme().RadioGroup()
+        .Items(radioGroupItems)
+        .Value("predefined")
+        .Layout(Orientation.Horizontal)
+        .OnValueChanged("onRadioGroupValueChanged")
+    )
+    @(Html.DevExtreme().SelectBox()
+        .ID("position")
+        .InputAttr("aria-label", "Position")
+        .Items(positions)
+        .Value("bottom center")
+        .OnSelectionChanged("positionSelectionChanged")
+    )
+    <div class="section">
+        @(Html.DevExtreme().NumberBox()
+            .ID("positionTop")
+            .Value(null)
+            .Width("48%")
+            .Visible(false)
+            .ValueChangeEvent("keyup")
+            .Placeholder("top")
+            .InputAttr("aria-label", "Position Top")
+            .OnValueChanged("topNumberBoxValueChanged")
+        )
+        @(Html.DevExtreme().NumberBox()
+            .ID("positionBottom")
+            .Value(null)
+            .Width("48%")
+            .Visible(false)
+            .ValueChangeEvent("keyup")
+            .InputAttr("aria-label", "Position Bottom")
+            .Placeholder("bottom")
+            .OnValueChanged("bottomNumberBoxValueChanged")
+        )
+    </div>
+    <div class="section">
+        @(Html.DevExtreme().NumberBox()
+            .ID("positionLeft")
+            .Value(null)
+            .Width("48%")
+            .Visible(false)
+            .ValueChangeEvent("keyup")
+            .Placeholder("left")
+            .InputAttr("aria-label", "Position Left")
+            .OnValueChanged("leftNumberBoxValueChanged")
+        )
+        @(Html.DevExtreme().NumberBox()
+            .ID("positionRight")
+            .Value(null)
+            .Width("48%")
+            .Visible(false)
+            .ValueChangeEvent("keyup")
+            .Placeholder("right")
+            .InputAttr("aria-label", "Position Right")
+            .OnValueChanged("rightNumberBoxValueChanged")
+        )
+    </div>
+    <div>Direction</div>
+    @(Html.DevExtreme().SelectBox()
+        .ID("direction")
+        .InputAttr("aria-label", "Direction")
+        .Items(directions)
+        .Value("up-push")
+        .OnSelectionChanged("directionSelectionChanged")
+    )
+    <div class="section">
+        @(Html.DevExtreme().Button()
+            .Text("Show")
+            .Width("48%")
+            .OnClick("show")
+        )
+        @(Html.DevExtreme().Button()
+            .Text("Hide all")
+            .Width("48%")
+            .OnClick("hideAll")
+        )
+    </div>
+</div>
+
+<script>
+    let id = 1;
+    let position = "bottom center";
+    let direction = "up-push";
+    const types = ["error", "info", "success", "warning"];
+
+    const onRadioGroupValueChanged = ({ value }) => {
+        const predefinedSelected = value === "predefined";
+        const positionSelectBox = $("#position").dxSelectBox("instance");
+        const topNumberBox = $("#positionTop").dxNumberBox("instance");
+        const bottomNumberBox = $("#positionBottom").dxNumberBox("instance");
+        const leftNumberBox = $("#positionLeft").dxNumberBox("instance");
+        const rightNumberBox = $("#positionRight").dxNumberBox("instance");
+
+        positionSelectBox.option("visible", predefinedSelected);
+        topNumberBox.option("visible", !predefinedSelected);
+        bottomNumberBox.option("visible", !predefinedSelected);
+        leftNumberBox.option("visible", !predefinedSelected);
+        rightNumberBox.option("visible", !predefinedSelected);
+
+        position = predefinedSelected
+            ? positionSelectBox.option("value")
+            : {
+                top: topNumberBox.option("value") || undefined,
+                left: leftNumberBox.option("value") || undefined,
+                bottom: bottomNumberBox.option("value") || undefined,
+                right: rightNumberBox.option("value") || undefined
+            };
+    }
+    const positionSelectionChanged = ({ selectedItem }) => position = selectedItem;
+    const directionSelectionChanged = ({ selectedItem }) => direction = selectedItem;
+
+    const numberBoxValueChange = (value, pos, componentToDisable) => {
+        position[pos] = value || undefined;
+        componentToDisable.option('disabled', !!value);
+    };
+    const topNumberBoxValueChanged = ({ value }) => {
+        numberBoxValueChange(value, 'top', $('#positionBottom').dxNumberBox('instance'));
+    };
+    const bottomNumberBoxValueChanged = ({ value }) => {
+        numberBoxValueChange(value, 'bottom', $('#positionTop').dxNumberBox('instance'));
+    };
+    const leftNumberBoxValueChanged = ({ value }) => {
+        numberBoxValueChange(value, 'left', $('#positionRight').dxNumberBox('instance'));
+    };
+    const rightNumberBoxValueChanged = ({ value }) => {
+        numberBoxValueChange(value, 'right', $('#positionLeft').dxNumberBox('instance'));
+    };
+
+    const show = () => {
+        DevExpress.ui.notify({
+                message: `Toast ${id}`,
+                height: 45,
+                width: 150,
+                minWidth: 150,
+                type: types[Math.floor(Math.random() * 4)],
+                displayTime: 3500,
+                animation: {
+                    show: { type: "fade", duration: 400, from: 0, to: 1 },
+                    hide: { type: "fade", duration: 40, to: 0 }
+                }
+            },
+                {
+                    position,
+                    direction
+                }
+
+            );
+            id++;
+    }
+    const hideAll = () => DevExpress.ui.hideToasts();
+</script>

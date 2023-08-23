@@ -1,0 +1,36 @@
+﻿@(Html.DevExtreme().Map()
+    .ID("map")
+    .Center("40.7061, -73.9969")
+    .Zoom(14)
+    .Height(400)
+    .Width("100%")
+    .Provider(GeoMapProvider.Bing)
+    .ApiKey(k => k.Bing("Aq3LKP2BOmzWY47TZoT1YdieypN_rB6RY9FqBfx-MDCKjvvWBbT68R51xwbL-AqC"))
+    .Type(GeoMapType.Roadmap)
+)
+
+<div class="options">
+    <div class="caption">Options</div>
+    <div class="option">
+        <span>Map Type</span>
+        @(Html.DevExtreme().SelectBox()
+            .ID("choose-type")
+            .InputAttr("aria-label", "Map Type")
+            .DataSource(new[] {
+                new { key = GeoMapType.Roadmap, name = "Road Map" },
+                new { key = GeoMapType.Satellite, name = "Satellite (Photographic) Map" },
+                new { key= GeoMapType.Hybrid, name= "Hybrid Map" }
+            })
+            .DisplayExpr("name")
+            .ValueExpr("key")
+            .Value(GeoMapType.Roadmap)
+            .OnValueChanged("selectBoxChooseType_onValueChanged")
+        )
+    </div>
+</div>
+
+<script>
+    function selectBoxChooseType_onValueChanged(data) {
+        $("#map").dxMap("instance").option("type", data.value);
+    }
+</script>

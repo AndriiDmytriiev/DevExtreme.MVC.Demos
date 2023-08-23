@@ -1,0 +1,38 @@
+﻿@(Html.DevExtreme().PieChart()
+    .ID("pie")
+    .Palette(VizPalette.Ocean)
+    .Title(t => t
+        .Text("Imports/Exports of Goods and Services")
+        .Subtitle(s => s.Text("(billion US$, 2012)"))
+    )
+    .Legend(l => l.Visible(true))
+    .Type(PieChartType.Doughnut)
+    .InnerRadius(0.2)
+    .CommonSeriesSettings(s => s.Label(l => l.Visible(false)))
+    .Tooltip(t => t
+        .Enabled(true)
+        .Format(Format.Currency)
+        .CustomizeTooltip(@<text>
+            function() {
+                return { text: this.argumentText + "<br>" + this.seriesName + ": " + this.valueText + "B" };
+            }
+        </text>)
+    )
+    .Export(e => e.Enabled(true))
+    .Series(s => {
+        s.Add().Name("Export").ArgumentField("Country").ValueField("Export");
+        s.Add().Name("Import").ArgumentField("Country").ValueField("Import");
+    })
+    .DataSource(new[] {
+        new { Country = "Brazil", Export = 241, Import = 225 },
+        new { Country = "Russia", Export = 536, Import = 284 },
+        new { Country = "India", Export = 317, Import = 453 },
+        new { Country = "China", Export = 1702, Import = 1717 },
+        new { Country = "Japan", Export = 699, Import = 800 },
+        new { Country = "USA", Export = 1448, Import = 2795 },
+        new { Country = "Canada", Export = 522, Import = 440 },
+        new { Country = "France", Export = 626, Import = 717 },
+        new { Country = "England", Export = 424, Import = 568 },
+        new { Country = "Germany", Export = 1403, Import = 1000 }
+    })
+)

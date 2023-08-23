@@ -1,0 +1,112 @@
+﻿@using DevExtreme.MVC.Demos.Models
+
+@model IEnumerable<Order>
+
+@(Html.DevExtreme().DataGrid<Order>()
+    .ID("gridContainer")
+    .DataSource(Model, new[] { "ID" })
+    .ShowBorders(true)
+    .ColumnChooser(c => c.Enabled(true))
+    .LoadPanel(p => p.Enabled(true))
+    .Columns(columns => {
+        columns.AddFor(m => m.OrderNumber);
+
+        columns.AddFor(m => m.OrderDate);
+
+        columns.AddFor(m => m.Employee);
+
+        columns.AddFor(m => m.CustomerStoreCity);
+
+        columns.AddFor(m => m.CustomerStoreState)
+            .GroupIndex(0);
+
+        columns.AddFor(m => m.SaleAmount)
+            .Alignment(HorizontalAlignment.Right)
+            .Format(Format.Currency);
+    })
+    .Toolbar(toolbar => {
+        toolbar.Items(items => {
+            items.Add()
+                .Location(ToolbarItemLocation.Before)
+                .Template(@<div class="informer"><h2 class="count"></h2><span class="name">Total Count</span></div>);
+
+            items.Add()
+                .Location(ToolbarItemLocation.Before)
+                .Widget(w =>
+                    w.SelectBox()
+                        .Width(225)
+                        .InputAttr("aria-label", "State")
+                        .DataSource(new[] {
+                            new { value = "CustomerStoreState", text = "Grouping by State" },
+                            new { value = "Employee", text = "Grouping by Employee" },
+                        })
+                        .DisplayExpr("text")
+                        .ValueExpr("value")
+                        .Value("CustomerStoreState")
+                        .OnValueChanged("selectboxValueChanged")
+                );
+
+            items.Add()
+                .Location(ToolbarItemLocation.Before)
+                .Widget(w =>
+                    w.Button()
+                        .Width(136)
+                        .Text("Collapse All")
+                        .OnClick("collapseButtonClicked")
+                );
+
+            items.Add()
+                .Location(ToolbarItemLocation.After)
+                .Widget(w =>
+                    w.Button()
+                        .Icon("refresh")
+                        .OnClick("refreshButtonClicked")
+                );
+
+            items.Add()
+                .Name("columnChooserButton");
+        });
+    })
+)
+
+<script>
+    var dataGrid;
+
+    function selectboxValueChanged(e) {
+        dataGrid.clearGrouping();
+        dataGrid.columnOption(e.value, "groupIndex", 0);
+        $(".informer .count").text(getGroupCount(e.value));
+    }
+
+    function collapseButtonClicked(e) {
+        var expanding = e.component.option("text") === "Expand All";
+        dataGrid.option("grouping.autoExpandAll", expanding);
+        e.component.option("text", expanding ? "Collapse All" : "Expand All");
+    }
+
+    function refreshButtonClicked(e) {
+        dataGrid.refresh();
+    }
+
+    function getGroupCount(groupField) {
+        var orders = [];
+
+        $("#gridContainer").dxDataGrid("instance")
+            .option("dataSource")
+            .store
+            .load()
+            .done(function (data) {
+                orders = data;
+            });
+
+        return DevExpress.data.query(orders)
+            .groupBy(groupField)
+            .toArray().length;
+    }
+
+    $(function () {
+        dataGrid = $("#gridContainer").dxDataGrid("instance");
+        $(".informer .count").text(getGroupCount("CustomerStoreState"));
+    });
+
+</script>

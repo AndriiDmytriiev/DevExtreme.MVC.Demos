@@ -1,0 +1,69 @@
+﻿<div id="grid">
+    @(Html.DevExtreme().DataGrid<DevExtreme.MVC.Demos.Models.Sale>()
+        .ID("grid-container")
+        .DataSource(d => d.WebApi().Controller("DataGridSales").Key("OrderId"))
+        .ShowBorders(true)
+        .Selection(s => s.Mode(SelectionMode.Multiple))
+        .Paging(p => p.PageSize(10))
+        .FilterRow(f => f.Visible(true))
+        .Columns(columns => {
+            columns.AddFor(m => m.OrderId)
+                .Width(90);
+
+            columns.AddFor(m => m.City);
+
+            columns.AddFor(m => m.Country)
+                .Width(180);
+
+            columns.AddFor(m => m.Region);
+
+            columns.AddFor(m => m.Date);
+
+            columns.AddFor(m => m.Amount)
+                .Caption("Amount")
+                .Format(Format.Currency)
+                .Width(90);
+        })
+    )
+
+    <div class="options">
+        <div class="caption">Options</div>
+        <div class="option">
+            <span>Select All Mode</span>
+            @(Html.DevExtreme().SelectBox()
+                .ID("select-all-mode")
+                .InputAttr("aria-label", "Select All Mode")
+                .DataSource(new[] { "allPages", "page" })
+                .Value("allPages")
+                .OnValueChanged("selectAllMode_changed")
+            )
+        </div>
+        <div class="option checkboxes-mode">
+            <span>Show Checkboxes Mode</span>
+            @(Html.DevExtreme().SelectBox()
+                .ID("show-checkboxes-mode")
+                .InputAttr("aria-label", "Show Checkboxes Mode")
+                .DataSource(new[] { "none", "onClick", "onLongTap", "always" })
+                .Value(new JS("defaultMode"))
+                .OnValueChanged("showCheckBoxesMode_changed")
+            )
+        </div>
+    </div>
+</div>
+
+<script>
+    const defaultMode = DevExpress.ui.themes.current().startsWith('material') ? 'always' : 'onClick';
+
+    function getDataGridInstance() {
+        return $("#grid-container").dxDataGrid("instance");
+    }
+
+    function selectAllMode_changed(data) {
+        getDataGridInstance().option("selection.selectAllMode", data.value);
+    }
+
+    function showCheckBoxesMode_changed(data) {
+        getDataGridInstance().option("selection.showCheckBoxesMode", data.value);
+        $("#select-all-mode").dxSelectBox("instance").option("disabled", data.value === "none");
+    }
+</script>

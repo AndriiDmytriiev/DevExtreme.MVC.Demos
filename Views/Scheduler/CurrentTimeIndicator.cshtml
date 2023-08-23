@@ -1,0 +1,110 @@
+﻿@model DevExtreme.MVC.Demos.ViewModels.DynamicAppointmentsViewModel
+
+@(Html.DevExtreme().Scheduler()
+    .ID("scheduler")
+    .DataSource(Model.Appointments)
+    .Views(new[] { SchedulerViewType.Week, SchedulerViewType.TimelineWeek })
+    .CurrentView(SchedulerViewType.Week)
+    .CurrentDate(new JS("new Date()"))
+    .ShowCurrentTimeIndicator(true)
+    .ShadeUntilCurrentTime(true)
+    .ShowAllDayPanel(false)
+    .Editing(false)
+    .Resources(res => { res.Add()
+        .FieldExpr("MovieId")
+        .ValueExpr("Id")
+        .DataSource(Model.Resources);
+    })
+    .Height(600)
+    .StartDateExpr("StartDate")
+    .EndDateExpr("EndDate")
+    .RecurrenceRuleExpr("RecurrenceRule")
+    .OnContentReady("onContentReady")
+    .OnAppointmentClick("onAppointmentClick")
+    .OnAppointmentDblClick("onAppointmentClick")
+    .AppointmentTemplate(@<text>
+        <% var movie = getMovieById(appointmentData.MovieId); %>
+        <div class="movie">
+            <img src="<%- movie.Image %>" alt="" />
+            <div class="movie-text"><%- movie.Text %></div>
+        </div>
+    </text>)
+)
+
+<div class="options">
+    <div class="column">
+        <div class="option">
+            <div class="label">Current time indicator</div>
+            <div class="value">
+                @(Html.DevExtreme().Switch()
+                    .ID("show-indicator")
+                    .Value(true)
+                    .OnValueChanged("onCurrentTimeIndicatorChanged")
+                )
+            </div>
+        </div>
+        <div class="option">
+            <div class="label">Shading until current time</div>
+            <div class="value">
+                @(Html.DevExtreme().Switch()
+                    .ID("allow-shading")
+                    .Value(true)
+                    .OnValueChanged("onShadingChanged")
+                )
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="option">
+            <div class="label">Update position in</div>
+            <div class="value">
+                @(Html.DevExtreme().NumberBox()
+                    .ID("update-interval")
+                    .Min(1)
+                    .Max(1200)
+                    .Value(10)
+                    .Step(10)
+                    .ShowSpinButtons(true)
+                    .Width("100px")
+                    .Format("#0 s")
+                    .InputAttr("aria-label", "Position")
+                    .OnValueChanged("onUpdateIntervalChanged")
+                )
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let moviesData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Resources));
+
+    function onContentReady(e) {
+        e.component.scrollTo(new Date());
+    }
+
+    function onAppointmentClick(e) {
+        e.cancel = true;
+    }
+
+    function getSchedulerInstance() {
+        return $("#scheduler").dxScheduler("instance");
+    }
+
+    function getMovieById(id) {
+        return DevExpress.data.query(moviesData)
+            .filter("Id", id)
+            .toArray()[0]
+    }
+
+    function onCurrentTimeIndicatorChanged(e) {
+        getSchedulerInstance().option("showCurrentTimeIndicator", e.value);
+    }
+
+    function onShadingChanged(e) {
+        getSchedulerInstance().option("shadeUntilCurrentTime", e.value);
+    }
+
+    function onUpdateIntervalChanged(e) {
+        getSchedulerInstance().option("indicatorUpdateInterval", e.value * 1000);
+    }
+</script>

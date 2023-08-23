@@ -1,0 +1,103 @@
+﻿@section ExternalDependencies {
+    <script src="https://unpkg.com/devextreme-quill@21_2/dist/dx-quill.min.js"></script>
+    <script src="https://unpkg.com/turndown@7.0.0/dist/turndown.js"></script>
+    <script src="https://unpkg.com/devextreme-showdown/dist/showdown.min.js"></script>
+    <script src="https://www.unpkg.com/prettier@2.7.1/standalone.js"></script>
+    <script src="https://www.unpkg.com/prettier@2.7.1/parser-html.js"></script>
+}
+
+@(Html.DevExtreme().HtmlEditor()
+    .ID("html_editor")
+    .Height(300)
+    .Value(new JS("markup"))
+    .OnValueChanged("valueChanged")
+    .Toolbar(toolbar => toolbar.Items(
+        items => {
+            items.Add().Name(HtmlEditorToolbarItem.Undo);
+
+            items.Add().Name(HtmlEditorToolbarItem.Redo);
+
+            items.Add().Name(HtmlEditorToolbarItem.Separator);
+
+            //items.Add()
+            //    .Name("size")
+            //    .AcceptedValues(new[] { "8pt", "10pt", "12pt", "14pt", "18pt", "24pt", "36pt" })
+            //    .Option("inputAttr", new { "aria-label" = "Font size" });
+
+            //items.Add()
+            //    .Name("font")
+            //    .AcceptedValues(new[] { "Arial", "Courier New", "Georgia", "Impact", "Lucida Console", "Tahoma", "Times New Roman", "Verdana" })
+            //    .Option("inputAttr", new { "aria-label" = "Font family" });
+
+            items.Add().Name(HtmlEditorToolbarItem.Separator);
+
+            items.Add().Name(HtmlEditorToolbarItem.Bold);
+
+            items.Add().Name(HtmlEditorToolbarItem.Italic);
+
+            items.Add().Name(HtmlEditorToolbarItem.Strike);
+
+            items.Add().Name(HtmlEditorToolbarItem.Underline);
+
+            items.Add().Name(HtmlEditorToolbarItem.Separator);
+
+            items.Add().Name(HtmlEditorToolbarItem.AlignLeft);
+
+            items.Add().Name(HtmlEditorToolbarItem.AlignCenter);
+
+            items.Add().Name(HtmlEditorToolbarItem.AlignRight);
+
+            items.Add().Name(HtmlEditorToolbarItem.AlignJustify);
+
+            items.Add().Name(HtmlEditorToolbarItem.Separator);
+
+            items.Add().Name(HtmlEditorToolbarItem.Color);
+
+            items.Add().Name(HtmlEditorToolbarItem.Background);
+        })
+    )
+)
+
+<div class="options">
+    @(Html.DevExtreme().ButtonGroup()
+        .Items(items => {
+            items.Add().Text("Html");
+            items.Add().Text("Markdown");
+        })
+        .OnSelectionChanged("selectionChanged")
+        .SelectedItemKeys(new[] { "Html" })
+    )
+    <div class="value-content"></div>
+</div>
+
+<script>
+    function formatOutput(value, valueType) {
+        const formattedValue = valueType === 'html' ? prettierFormat(value) : value;
+        $('.value-content').text(formattedValue);
+    }
+
+    function valueChanged({ component, value }) {
+        formatOutput(value, component.option('valueType'));
+    }
+
+    function selectionChanged(e) {
+        var editorInstance = $("#html_editor").dxHtmlEditor("instance");
+
+        var valueType = e.addedItems[0].text.toLowerCase();
+        editorInstance.option({ valueType });
+        var value = editorInstance.option("value");
+
+        formatOutput(value, valueType);
+    }
+
+    function prettierFormat(markup) {
+        return prettier.format(markup, {
+            parser: "html",
+            plugins: prettierPlugins
+        })
+    }
+
+    var markup = '<h2><img src="../../Content/images/widgets/HtmlEditor.svg" alt="HtmlEditor"> Formatted Text Editor (HTML Editor)</h2><p><br></p><p>DevExtreme JavaScript HTML Editor is a client-side WYSIWYG text editor that allows its users to format textual and visual content and store it as HTML or Markdown.</p>';
+
+    formatOutput(markup, 'html');
+</script>

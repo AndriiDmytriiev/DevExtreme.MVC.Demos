@@ -1,0 +1,48 @@
+﻿<div class="list-api-demo">
+    <div class="widget-container">
+        @(Html.DevExtreme().List()
+            .ID("simpleList")
+            .Height(400)
+            .DataSource(d => d.WebApi()
+                .Controller("ListEditing")
+                .DeleteAction(true)
+                .Key("ID")
+            )
+            .AllowItemDeleting(false)
+            .ItemDeleteMode(ListItemDeleteMode.Toggle)
+            .ItemTemplate(@<text><%- Text %></text>)
+        )
+    </div>
+    <div class="options">
+        <div class="caption">Options</div>
+        <div class="option">
+            @(Html.DevExtreme().CheckBox()
+                .Value(false)
+                .Text("Allow deletion")
+                .OnValueChanged("checkBox_valueChanged")
+            )
+        </div>
+        <div class="option">
+            <span>Item delete mode</span>
+            @(Html.DevExtreme().SelectBox()
+                .ID("itemDeleteMode")
+                .Disabled(true)
+                .InputAttr("aria-label", "Delete Mode")
+                .DataSource(Enum.GetValues(typeof(ListItemDeleteMode)))
+                .Value(ListItemDeleteMode.Toggle)
+                .OnValueChanged("selectBox_valueChanged")
+            )
+        </div>
+    </div>
+</div>
+
+<script>
+    var checkBox_valueChanged = function(e) {
+        $("#simpleList").dxList("option", "allowItemDeleting", e.value);
+        $("#itemDeleteMode").dxSelectBox("option", "disabled", !e.value);
+    };
+
+    var selectBox_valueChanged = function(e) {
+        $("#simpleList").dxList("option", "itemDeleteMode", e.value);
+    };
+</script>

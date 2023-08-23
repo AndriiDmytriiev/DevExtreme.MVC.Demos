@@ -1,0 +1,136 @@
+﻿<div class="form">
+    <div class="dx-fieldset">
+        <div class="dx-field">
+            <div class="dx-field-label">Default mode</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().Slider()
+                    .Min(0)
+                    .Max(100)
+                    .Value(90)
+                )
+            </div>
+        </div>
+        <div class="dx-field custom-height-slider">
+            <div class="dx-field-label">With labels</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().Slider()
+                    .Min(0)
+                    .Max(100)
+                    .Value(50)
+                    .Label(l => l
+                        .Visible(true)
+                        .Format(new JS("formatLabel"))
+                        .Position(VerticalEdge.Top)
+                    )
+                )
+            </div>
+        </div>
+        <div class="dx-field custom-height-slider">
+            <div class="dx-field-label">With tooltip</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().Slider()
+                    .Min(0)
+                    .Max(100)
+                    .Value(35)
+                    .Tooltip(t => t
+                        .Enabled(true)
+                        .Format(new JS("formatLabel"))
+                        .Position(VerticalEdge.Bottom)
+                        .ShowMode(SliderTooltipShowMode.Always)
+                    )
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">Without range highlighting</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().Slider()
+                    .Min(0)
+                    .Max(100)
+                    .Value(20)
+                    .ShowRange(false)
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">With discrete step</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().Slider()
+                    .Min(0)
+                    .Max(100)
+                    .Value(10)
+                    .Step(10)
+                    .Tooltip(t => t.Enabled(true))
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">Disabled</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().Slider()
+                    .Min(0)
+                    .Max(100)
+                    .Value(50)
+                    .Disabled(true)
+                )
+            </div>
+        </div>
+    </div>
+    <div class="dx-fieldset">
+        <div class="dx-fieldset-header">Process Value Changes</div>
+        <div class="dx-field">
+            <div class="dx-field-label">On handle movement</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().Slider()
+                    .ID("slider-on-handle-move")
+                    .Min(0)
+                    .Max(100)
+                    .Value(10)
+                    .OnValueChanged("slider_valueChanged")
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">On handle release</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().Slider()
+                    .ID("slider-on-handle-release")
+                    .Min(0)
+                    .Max(100)
+                    .Value(10)
+                    .ValueChangeMode(SliderValueChangeMode.OnHandleRelease)
+                    .OnValueChanged("slider_valueChanged")
+                )
+            </div>
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">Slider value</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().NumberBox()
+                    .ID("slider-value")
+                    .Value(10)
+                    .Min(0)
+                    .Max(100)
+                    .ShowSpinButtons(true)
+                    .InputAttr("aria-label", "Slider Value")
+                    .OnValueChanged("numberBox_valueChanged")
+                )
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function formatLabel(value) {
+        return value + "%";
+    }
+
+    function slider_valueChanged(data) {
+        $("#slider-value").dxNumberBox("instance").option("value", data.value);
+    }
+
+    function numberBox_valueChanged(data) {
+        $("#slider-on-handle-move").dxSlider("instance").option("value", data.value);
+        $("#slider-on-handle-release").dxSlider("instance").option("value", data.value);
+    }
+</script>

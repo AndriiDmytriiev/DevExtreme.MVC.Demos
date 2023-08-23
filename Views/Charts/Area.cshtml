@@ -1,0 +1,53 @@
+﻿<div id="chart-demo">
+    @(Html.DevExtreme().Chart()
+        .ID("area-chart")
+        .Palette(VizPalette.HarmonyLight)
+        .CommonSeriesSettings(s => s
+            .ArgumentField("Country")
+            .Type(SeriesType.Area)
+        )
+        .Series(s => {
+            s.Add().ValueField("Y1564").Name("15-64 years");
+            s.Add().ValueField("Y014").Name("0-14 years");
+            s.Add().ValueField("Y65").Name("65 years and older");
+        })
+        .Margin(m => m.Bottom(20))
+        .Title("Population: Age Structure (2018)")
+        .ArgumentAxis(a => a.ValueMarginsEnabled(false))
+        .Export(e => e.Enabled(true))
+        .Legend(l => l
+            .VerticalAlignment(VerticalEdge.Bottom)
+            .HorizontalAlignment(HorizontalAlignment.Center)
+        )
+        .DataSource(new[] {
+            new {  Country = "China",  Y014 = 233866959,  Y1564 = 1170914102,  Y65 = 171774113 },
+            new {  Country = "India",  Y014 = 373419115,  Y1564 = 882520945,  Y65 = 76063757 },
+            new {  Country = "United States",  Y014 = 60554755,  Y1564 = 213172625,  Y65 = 54835293 },
+            new {  Country = "Indonesia",  Y014 = 65715705,  Y1564 = 177014815,  Y65 = 18053690 },
+            new {  Country = "Brazil",  Y014 = 45278034,  Y1564 = 144391494,  Y65 = 17190842 },
+            new {  Country = "Russia",  Y014 = 24465156,  Y1564 = 96123777,  Y65 = 20412243 }
+        })
+    )
+
+    <div class="options">
+        <div class="caption">Options</div>
+        <div class="option">
+            <span>Series Type</span>
+            @(Html.DevExtreme().SelectBox()
+                .DataSource(new[] {
+                SeriesType.Area,
+                SeriesType.StackedArea,
+                SeriesType.FullStackedArea
+                })
+                .Value(SeriesType.Area)
+                .InputAttr("aria-label", "Series Type")
+                .OnValueChanged(@<text>
+                    function(e) {
+                        var chart = $("#area-chart").dxChart("instance");
+                        chart.option("commonSeriesSettings.type", e.value);
+                    }
+                </text>)
+            )
+        </div>
+    </div>
+</div>
